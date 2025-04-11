@@ -7,7 +7,11 @@ class Task:
         self.priority = priority
 
 def greedy_schedule(task_dicts):
-    tasks = [Task(t['name'], t['duration'], t['priority']) for t in task_dicts]
+    valid_tasks = [
+        t for t in task_dicts
+        if isinstance(t, dict) and 'name' in t and 'duration' in t and 'priority' in t
+    ]
+    tasks = [Task(t['name'], t['duration'], t['priority']) for t in valid_tasks]
     sorted_tasks = sorted(tasks, key=lambda x: (x.priority, x.duration))
     return sorted_tasks
 
