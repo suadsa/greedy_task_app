@@ -7,13 +7,16 @@ class Task:
         self.priority = priority
 
 def greedy_schedule(task_dicts):
-    valid_tasks = [
-        t for t in task_dicts
-        if isinstance(t, dict) and 'name' in t and 'duration' in t and 'priority' in t
-    ]
-    tasks = [Task(t['name'], t['duration'], t['priority']) for t in valid_tasks]
-    sorted_tasks = sorted(tasks, key=lambda x: (x.priority, x.duration))
-    return sorted_tasks
+    valid_tasks = []
+    for t in task_dicts:
+        try:
+            if isinstance(t, dict) and all(k in t for k in ['name', 'duration', 'priority']):
+                valid_tasks.append(Task(t['name'], t['duration'], t['priority']))
+            else:
+                st.warning(f"Skipped invalid task: {t}")
+        except Exception as e:
+            st.error(f"Error while processing task: {t} — {e}")
+    return sorted(valid_tasks, key=lambda x: (x.priority, x.duration))
 
 st.title("Smart Task Scheduler")
 st.write("Enter your tasks and priorities, and let us sort them for you!")
@@ -42,4 +45,3 @@ if st.button("Sort Tasks"):
             st.write(f"{i}. *{task.name}* — {task.duration} min — Priority: {task.priority}")
     else:
         st.warning("No tasks added yet!")
-
