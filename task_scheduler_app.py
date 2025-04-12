@@ -1,4 +1,5 @@
-import streamlit as st from dataclasses import dataclass
+import streamlit as st
+from dataclasses import dataclass
 
 Page config
 
