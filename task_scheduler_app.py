@@ -1,38 +1,24 @@
 import streamlit as st
 
-# Task class
-class Task:
-    def _init_(self, name, duration, priority):
-        self.name = name
-        self.duration = duration
-        self.priority = priority
+# تعريف المهمة كـ Dictionary وليس كـ كائن من كلاس
+# لأن Streamlit ما يحفظ الكائنات المخصصة مثل Task بشكل صحيح بين الجلسات
 
-# Greedy sorting algorithm with validation
-def greedy_schedule(task_dicts):
-    valid_tasks = []
-    for t in task_dicts:
-        try:
-            st.write(f"Checking: {repr(t)}")  # For debugging
-            if isinstance(t, dict) and all(k in t for k in ['name', 'duration', 'priority']):
-                valid_tasks.append(Task(t['name'], t['duration'], t['priority']))
-            else:
-                st.warning(f"Skipped invalid task: {repr(t)}")
-        except Exception as e:
-            st.error(f"Error while processing task: {repr(t)} — {e}")
-    return sorted(valid_tasks, key=lambda x: (x.priority, x.duration))
+def greedy_schedule(tasks):
+    # نرتب المهام حسب الأولوية (أقل رقم = أولوية أعلى) ثم حسب المدة
+    return sorted(tasks, key=lambda x: (x['priority'], x['duration']))
 
-# Streamlit UI
-st.title("Smart Task Scheduler")
-st.write("Add your tasks and we'll help you prioritize them using a greedy approach!")
+# واجهة المستخدم
+st.title("Smart Task Organizer")
+st.write("Enter your tasks and we'll schedule them by priority and duration!")
 
-# Session state for storing tasks
+# التأكد من وجود قائمة المهام في جلسة Streamlit
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
 
-# Task input form
+# نموذج إدخال المهام
 with st.form("task_form"):
-    name = st.text_input("Task Name")
-    duration = st.number_input("Duration (minutes)", min_value=1, step=1)
+    name = st.text_input("Task name")
+    duration = st.number_input("Duration (in minutes)", min_value=1, step=1)
     priority = st.selectbox("Priority", [1, 2, 3], format_func=lambda x: f"{x} - {'High' if x == 1 else 'Medium' if x == 2 else 'Low'}")
     submitted = st.form_submit_button("Add Task")
     if submitted:
@@ -41,12 +27,11 @@ with st.form("task_form"):
             'duration': duration,
             'priority': priority
         })
-        st.success("Task added successfully!")
+        st.success("Task added!")
 
-# Button to sort tasks
+# زر لعرض وترتيب المهام
 if st.button("Schedule Tasks"):
     sorted_tasks = greedy_schedule(st.session_state.tasks)
     st.subheader("Sorted Tasks:")
     for i, task in enumerate(sorted_tasks, 1):
-        st.write(f"{i}. *{task.name}* — {task.duration} minutes — Priority: {task.priority}")
-
+        st.write(f"{i}. *{task['name']}* — {task['duration']} min — Priority: {task['priority']}")
