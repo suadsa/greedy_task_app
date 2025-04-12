@@ -3,18 +3,17 @@ from dataclasses import dataclass
 
 st.set_page_config(page_title="Smart Task Scheduler", page_icon="🗂", layout="centered")
 
-# Custom CSS for full soft floral theme
+# Theme CSS
 st.markdown(
     """
     <style>
-    /* خلفية وردية */
     .stApp {
         background-color: #ffeded;
         color: black;
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    /* الأزرار العامة */
-    .stButton > button {
+    button[kind="primary"], .stButton > button {
         background-color: #A2D5C6 !important;
         color: black !important;
         border: none;
@@ -22,29 +21,21 @@ st.markdown(
         padding: 0.5em 1em;
         font-weight: bold;
     }
-    .stButton > button:hover {
+
+    button[kind="primary"]:hover {
         background-color: #6DB1A9 !important;
     }
 
-    /* زر داخل الفورم */
-    div.row-widget.stButton > button {
-        background-color: #A2D5C6 !important;
-        color: black !important;
-    }
-
-    /* حقول الإدخال */
     input, select, textarea {
-        color: black !important;
         background-color: white !important;
+        color: black !important;
     }
 
-    /* العناوين */
-    .stTextInput > label, .stNumberInput > label, .stSelectbox > label {
+    label, .stSelectbox label, .stNumberInput label, .stTextInput label {
         color: black !important;
         font-weight: 600;
     }
 
-    /* بطاقات المهام */
     .task-card {
         background-color: white;
         padding: 10px;
