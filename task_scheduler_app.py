@@ -7,25 +7,25 @@ st.set_page_config(page_title="Task Scheduler", layout="centered")
 # تنسيق مخصص
 st.markdown("""
     <style>
-        body {
+        body, .stApp {
             background-color: #ffeded;
             color: black;
         }
 
-        .stApp {
-            background-color: #ffeded;
-            color: black;
+        label, .stTextInput label, .stNumberInput label, .stSelectbox label {
+            color: black !important;
+            font-weight: 600;
         }
 
-        .stButton > button {
-            background-color: #A2D5C6;
-            color: black;
-            border: none;
+        .stTextInput > div > input,
+        .stNumberInput input,
+        .stSelectbox div {
+            color: black !important;
+            background-color: white !important;
             border-radius: 10px;
-            padding: 0.5em 1em;
-            font-weight: bold;
         }
 
+        .stButton > button,
         .stForm button {
             background-color: #A2D5C6 !important;
             color: black !important;
@@ -49,11 +49,6 @@ st.markdown("""
             background-color: #D0E8FF !important;
             color: black !important;
         }
-
-        .stTextInput > div > input, .stNumberInput input, .stSelectbox div {
-            color: black !important;
-            background-color: white !important;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -64,7 +59,7 @@ class Task:
     duration: int
     priority: int
 
-# الخوارزمية: ترتيب Greedy حسب الأولوية والمدة
+# خوارزمية Greedy للجدولة
 def greedy_schedule(tasks):
     return sorted(tasks, key=lambda x: (x.priority, x.duration))
 
@@ -105,4 +100,5 @@ if st.button("Sort Tasks"):
 # زر لإعادة تعيين القائمة
 if st.button("Clear All Tasks"):
     st.session_state.tasks.clear()
-    st.success("All tasks cleared!")
+    st.success("All tasks cleared!")
+
