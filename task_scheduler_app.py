@@ -1,4 +1,4 @@
-٠import streamlit as st
+import streamlit as st
 
 # --- CSS Styling ---
 st.markdown("""
@@ -28,25 +28,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Task Class ---
 class Task:
     def _init_(self, name, duration, priority):
         self.name = name
         self.duration = duration
         self.priority = priority
 
-# --- Greedy Scheduler ---
 def greedy_schedule(tasks):
     return sorted(tasks, key=lambda x: (x.priority, x.duration))
 
-# --- App Title ---
 st.title("Smart Task Organizer")
 
-# --- Session State ---
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
 
-# --- Task Input Form ---
 with st.form("task_form"):
     st.subheader("Add a New Task")
     name = st.text_input("Task Name")
@@ -57,7 +52,6 @@ with st.form("task_form"):
         st.session_state.tasks.append(Task(name, duration, priority))
         st.success("Task added successfully!")
 
-# --- Sort Tasks Button ---
 if st.button("Sort Tasks"):
     sorted_tasks = greedy_schedule(st.session_state.tasks)
     st.subheader("Sorted Tasks")
@@ -66,7 +60,7 @@ if st.button("Sort Tasks"):
         st.write(f"{i}. *{task.name}* — {task.duration} mins — Priority: {task.priority}")
     st.info(f"*Total Time:* {total_time} minutes")
 
-# --- Clear All Button ---
 if st.button("Clear All Tasks"):
     st.session_state.tasks = []
     st.success("All tasks cleared!")
+
