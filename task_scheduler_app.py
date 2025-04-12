@@ -1,30 +1,49 @@
 import streamlit as st
 from dataclasses import dataclass
 
-# Page configuration
 st.set_page_config(page_title="Smart Task Scheduler", page_icon="🗂", layout="centered")
 
-# Custom CSS for soft floral theme
+# Custom CSS for full soft floral theme
 st.markdown(
     """
     <style>
-    /* صفحة كاملة بلون وردي فاتح */
+    /* خلفية وردية */
     .stApp {
         background-color: #ffeded;
         color: black;
     }
-    /* أزرار نعناعي */
+
+    /* الأزرار العامة */
     .stButton > button {
-        background-color: #A2D5C6;
-        color: black;
+        background-color: #A2D5C6 !important;
+        color: black !important;
         border: none;
         border-radius: 10px;
         padding: 0.5em 1em;
         font-weight: bold;
     }
     .stButton > button:hover {
-        background-color: #6DB1A9;
+        background-color: #6DB1A9 !important;
     }
+
+    /* زر داخل الفورم */
+    div.row-widget.stButton > button {
+        background-color: #A2D5C6 !important;
+        color: black !important;
+    }
+
+    /* حقول الإدخال */
+    input, select, textarea {
+        color: black !important;
+        background-color: white !important;
+    }
+
+    /* العناوين */
+    .stTextInput > label, .stNumberInput > label, .stSelectbox > label {
+        color: black !important;
+        font-weight: 600;
+    }
+
     /* بطاقات المهام */
     .task-card {
         background-color: white;
@@ -38,26 +57,21 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Task dataclass (for internal use)
 @dataclass
 class Task:
     name: str
     duration: int
     priority: int
 
-# Greedy scheduling algorithm
 def greedy_schedule(tasks):
     return sorted(tasks, key=lambda x: (x.priority, x.duration))
 
-# App title and description
 st.title("Smart Task Scheduler")
 st.write("Enter your tasks and let us prioritize them for you!")
 
-# Initialize session state
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
 
-# Form to add a task
 with st.form("task_form"):
     task_name = st.text_input("Task Name")
     task_duration = st.number_input("Duration (minutes)", min_value=1, step=1)
@@ -71,7 +85,6 @@ with st.form("task_form"):
         st.session_state.tasks.append(Task(task_name, task_duration, task_priority))
         st.success("Task added successfully!")
 
-# Button to sort and display tasks
 if st.button("Sort Tasks"):
     if st.session_state.tasks:
         sorted_tasks = greedy_schedule(st.session_state.tasks)
@@ -89,7 +102,6 @@ if st.button("Sort Tasks"):
     else:
         st.warning("No tasks to schedule.")
 
-# Button to clear all tasks
 if st.button("Clear All Tasks"):
     st.session_state.tasks = []
     st.success("All tasks have been cleared!")
