@@ -1,10 +1,9 @@
 import streamlit as st
 from dataclasses import dataclass
 
-# إعداد الصفحة
 st.set_page_config(page_title="Task Scheduler", layout="centered")
 
-# تنسيق مخصص
+# Styling
 st.markdown("""
     <style>
         body, .stApp {
@@ -17,12 +16,13 @@ st.markdown("""
             font-weight: 600;
         }
 
-        .stTextInput > div > input,
+        input[type="text"],
+        .stTextInput input,
         .stNumberInput input,
         .stSelectbox div {
             color: black !important;
             background-color: white !important;
-            border-radius: 10px;
+            border-radius: 10px !important;
         }
 
         .stButton > button,
@@ -52,26 +52,21 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# تعريف المهمة
 @dataclass
 class Task:
     name: str
     duration: int
     priority: int
 
-# خوارزمية Greedy للجدولة
 def greedy_schedule(tasks):
     return sorted(tasks, key=lambda x: (x.priority, x.duration))
 
-# حالة الجلسة لتخزين المهام
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
 
-# العنوان
 st.title("Smart Task Scheduler")
 st.write("Enter your tasks with their duration and priority, and we'll schedule them for you.")
 
-# النموذج لإضافة مهمة
 with st.form("task_form"):
     task_name = st.text_input("Task Name")
     task_duration = st.number_input("Duration (minutes)", min_value=1, step=1)
@@ -84,7 +79,6 @@ with st.form("task_form"):
         else:
             st.warning("Please enter a task name.")
 
-# زر ترتيب المهام
 if st.button("Sort Tasks"):
     if st.session_state.tasks:
         sorted_tasks = greedy_schedule(st.session_state.tasks)
@@ -97,8 +91,7 @@ if st.button("Sort Tasks"):
     else:
         st.warning("No tasks to sort.")
 
-# زر لإعادة تعيين القائمة
 if st.button("Clear All Tasks"):
     st.session_state.tasks.clear()
-    st.success("All tasks cleared!")
+    st.success("All tasks cleared!")
 
