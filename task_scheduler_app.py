@@ -58,27 +58,73 @@ class Task:
     duration: int
     priority: int
 
-def greedy_schedule(tasks):
-    return sorted(tasks, key=lambda x: (x.priority, x.duration))
+class TaskSchedulerAI:
+    def _init_(self, tasks, max_time):
+        self.tasks = tasks
+        self.max_time = max_time
+    
+    def evaluate(self, task):
+        # دالة التقييم: تعطي درجة لكل مهمة بناءً على الأولوية والوقت
+        return (task.priority * 10) / task.duration if task.duration <= self.max_time else 0
+    
+    def schedule(self):
+        scheduled = []
+        remaining_time = self.max_time
+        
+        while remaining_time > 0 and self.tasks:
+            # الخطوة الجشعة الذكية: اختيار المهمة ذات الدرجة الأعلى
+            best_task = max(self.tasks, key=lambda x: self.evaluate(x))
+            
+            if best_task.duration <= remaining_time:
+                scheduled.append(best_task)
+                remaining_time -= best_task.duration
+                self.tasks.remove(best_task)
+            else:
+                break
+        
+        return scheduled, self.max_time - remaining_time
 
+'''def greedy_schedule(tasks):
+    return sorted(tasks, key=lambda x: (x.priority, x.duration))
+'''
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
 
 st.title("Smart Task Scheduler")
-st.write("Enter your tasks with their duration and priority, and we'll schedule them for you.")
+available_time = st.number_input("Available Time (minutes)", min_value=1, step=1)
+# st.write("Enter your tasks with their duration and priority, and we'll schedule them for you.")
 
 with st.form("task_form"):
     task_name = st.text_input("Task Name")
     task_duration = st.number_input("Duration (minutes)", min_value=1, step=1)
     task_priority = st.selectbox("Priority", [1, 2, 3], format_func=lambda x: f"{x} - {'High' if x == 1 else 'Medium' if x == 2 else 'Low'}")
     add_button = st.form_submit_button("Add Task")
-    if add_button:
-        if task_name.strip():
+    if add_button and task_name.strip():
             st.session_state.tasks.append(Task(task_name, task_duration, task_priority))
             st.success("Task added successfully!")
-        else:
-            st.warning("Please enter a task name.")
 
+    if st.button("Schedule Tasks (AI Version)"):
+        if st.session_state.tasks:
+            scheduler = TaskSchedulerAI(st.session_state,tasks.copy(), available_time)
+            scheduled, total_used = schedular.schedule()
+            st.subheader("Scheduled Tasks:")
+            for i, task in enumerate(scheduled, 1):
+                st.write(f"{i}. *{task.name}* - {task.duration} min - Priority: {task.priority}")
+            st.info(f"Total time used: {total_used} / {available_time} minutes")
+        else:
+            st.warning("No tasks to schedule.")
+            
+    if st.button("Clear All Tasks"):
+    st.session_state.tasks.clear()
+    st.success("All tasks cleared!")
+
+            
+        
+        
+       ''' else:
+            st.warning("Please enter a task name.")
+'''
+'''
 if st.button("Sort Tasks"):
     if st.session_state.tasks:
         sorted_tasks = greedy_schedule(st.session_state.tasks)
@@ -94,4 +140,4 @@ if st.button("Sort Tasks"):
 if st.button("Clear All Tasks"):
     st.session_state.tasks.clear()
     st.success("All tasks cleared!")
-
+'''
